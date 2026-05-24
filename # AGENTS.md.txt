@@ -1,0 +1,119 @@
+# AGENTS.md
+
+# Project Overview
+
+This project is a full-stack healthcare emergency management system built as a final-year college project.
+
+The system consists of:
+
+1. Admin Web Application
+2. Mobile Application
+3. Shared Backend APIs
+
+The web app is focused on administration, inventory management, analytics, and emergency operations.
+
+The mobile app is focused on donor registration, emergency requests, blood search, notifications, and donation history.
+
+The goal is to build a production-style healthcare platform for managing:
+
+- Blood inventory
+- Oxygen inventory
+- Emergency blood requests
+- Donor management
+- Hospitals
+- Suppliers
+- Analytics and reporting
+
+---
+
+# Project Architecture
+
+Frontend:
+- React + Vite
+- Tailwind CSS
+- Redux Toolkit
+- React Router
+- Axios
+
+Backend:
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- Role-Based Access Control
+- Socket.IO for realtime features
+
+Mobile:
+- React Native + Expo
+
+---
+
+# Main Modules
+
+## Admin Web Application
+
+The web app contains:
+
+- Authentication
+- Dashboard
+- Blood Management
+- Oxygen Management
+- Emergency Request Management
+- User Management
+- Reports & Analytics
+- Notifications
+
+The UI should look modern, clean, responsive, and production-ready.
+
+Use:
+- Card-based layouts
+- Clean tables
+- Charts
+- Healthcare dashboard style
+- Light theme with red emergency accents
+
+---
+
+# Authentication System
+
+Use JWT authentication.
+
+Roles:
+- SUPER_ADMIN
+- HOSPITAL
+- BLOOD_BANK
+- OXYGEN_SUPPLIER
+
+Features:
+- Login
+- Protected routes
+- Role-based access
+- Token persistence
+- Logout
+
+Passwords must be hashed using bcrypt.
+
+---
+
+# Backend API Standards
+
+Use REST APIs.
+
+Base URL:
+`/api`
+
+Example:
+- POST /api/auth/login
+- GET /api/blood
+- POST /api/emergency/create
+
+API responses should follow this format:
+
+Success:
+```json
+{
+  "success": true,
+  "message": "Data fetched successfully",
+  "data": {}
+}

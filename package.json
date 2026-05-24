@@ -1,0 +1,20 @@
+{
+  "name": "healthcare-emergency-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "mobile"
+  ],
+  "scripts": {
+    "dev:frontend": "npm --workspace frontend run dev",
+    "dev:backend": "npm --workspace backend run dev",
+    "dev:mobile": "npm --workspace mobile start",
+    "build:frontend": "npm --workspace frontend run build",
+    "start:backend": "npm --workspace backend run start"
+  },
+  "dependencies": {
+    "debug": "^4.3.7"
+  }
+}

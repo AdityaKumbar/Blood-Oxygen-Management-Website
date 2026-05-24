@@ -1,0 +1,9 @@
+export const ROLES = {
+  SUPER_ADMIN: "SUPER_ADMIN",
+  HOSPITAL: "HOSPITAL",
+  DONOR: "DONOR",
+  BLOOD_BANK: "BLOOD_BANK",
+  OXYGEN_SUPPLIER: "OXYGEN_SUPPLIER",
+};
+
+export const ROLE_VALUES = Object.values(ROLES);
