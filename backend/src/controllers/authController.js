@@ -8,6 +8,7 @@ import {
   listPendingUsers,
   loginUser,
   registerUser,
+  updateUserProfile,
   rejectUserAccount,
 } from "../services/authService.js";
 
@@ -24,6 +25,11 @@ export const login = asyncHandler(async (req, res) => {
 export const profile = asyncHandler(async (req, res) => {
   const user = await getUserProfile(req.user.id);
   return successResponse(res, 200, "Profile fetched successfully", user);
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const user = await updateUserProfile(req.user.id, req.body || {});
+  return successResponse(res, 200, "Profile updated successfully", user);
 });
 
 export const getPendingUsers = asyncHandler(async (req, res) => {

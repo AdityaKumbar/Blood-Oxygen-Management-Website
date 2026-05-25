@@ -8,10 +8,15 @@ import {
   profile,
   register,
   rejectPendingUser,
+  updateProfile,
 } from "../controllers/authController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
-import { validateLoginPayload, validateRegisterPayload } from "../validators/authValidator.js";
+import {
+  validateLoginPayload,
+  validateRegisterPayload,
+  validateUpdateProfilePayload,
+} from "../validators/authValidator.js";
 import { ROLES } from "../utils/roles.js";
 
 const authRouter = Router();
@@ -23,6 +28,13 @@ authRouter.get(
   authenticate,
   authorizeRoles(ROLES.SUPER_ADMIN, ROLES.HOSPITAL, ROLES.DONOR, ROLES.BLOOD_BANK, ROLES.OXYGEN_SUPPLIER),
   profile
+);
+authRouter.patch(
+  "/profile",
+  authenticate,
+  authorizeRoles(ROLES.SUPER_ADMIN, ROLES.HOSPITAL, ROLES.DONOR, ROLES.BLOOD_BANK, ROLES.OXYGEN_SUPPLIER),
+  validateUpdateProfilePayload,
+  updateProfile
 );
 
 authRouter.get("/pending-users", authenticate, authorizeRoles(ROLES.SUPER_ADMIN), getPendingUsers);

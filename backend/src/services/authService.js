@@ -9,6 +9,8 @@ const toPublicUser = (user) => ({
   id: user._id,
   name: user.name,
   email: user.email,
+  phone: user.phone || "",
+  avatarUrl: user.avatarUrl || "",
   role: user.role,
   accountStatus: user.accountStatus,
   approvedAt: user.approvedAt,
@@ -17,7 +19,7 @@ const toPublicUser = (user) => ({
   updatedAt: user.updatedAt,
 });
 
-export const registerUser = async ({ name, email, password, role }) => {
+export const registerUser = async ({ name, email, phone, password, role }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new AppError("User already exists", 409);
@@ -30,6 +32,7 @@ export const registerUser = async ({ name, email, password, role }) => {
   const user = await User.create({
     name,
     email,
+    phone: phone ? String(phone).trim() : "",
     password: hashedPassword,
     role,
     accountStatus: shouldAutoApprove ? ACCOUNT_STATUS.APPROVED : ACCOUNT_STATUS.PENDING,
@@ -51,6 +54,29 @@ export const registerUser = async ({ name, email, password, role }) => {
     accessToken: generateAccessToken(tokenPayload),
     refreshToken: generateRefreshToken(tokenPayload),
   };
+};
+
+export const updateUserProfile = async (userId, { name, phone, avatarUrl }) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (name !== undefined) {
+    user.name = String(name).trim();
+  }
+
+  if (phone !== undefined) {
+    user.phone = String(phone).trim();
+  }
+
+  if (avatarUrl !== undefined) {
+    user.avatarUrl = String(avatarUrl).trim();
+  }
+
+  await user.save();
+  return toPublicUser(user);
 };
 
 export const loginUser = async ({ email, password }) => {
