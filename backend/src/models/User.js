@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
     password: { type: String, required: true, minlength: 8, select: false },
+    phone: { type: String, trim: true, default: "" },
+    latitude: { type: Number, default: null },
+    longitude: { type: Number, default: null },
+    address: { type: String, trim: true, default: "" },
     role: {
       type: String,
       enum: ROLE_VALUES,

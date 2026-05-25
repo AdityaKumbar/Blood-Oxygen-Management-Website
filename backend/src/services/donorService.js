@@ -28,6 +28,8 @@ const toDonorResponse = (profile) => ({
   city: profile.city,
   lastDonatedAt: profile.lastDonatedAt ? profile.lastDonatedAt.toISOString() : null,
   eligibility: toEligibility(profile.lastDonatedAt),
+  bloodGroup: profile.bloodGroup,
+  city: profile.city,
   history: [],
 });
 

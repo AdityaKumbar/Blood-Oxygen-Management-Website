@@ -58,13 +58,16 @@ export const searchResources = async ({ query = "", bloodGroup = "ALL", includeB
     if (normalizedQuery) {
       hospitalQuery.name = { $regex: normalizedQuery, $options: "i" };
     }
-    const hospitals = await User.find(hospitalQuery).select("_id name");
+    const hospitals = await User.find(hospitalQuery).select("_id name phone latitude longitude address");
     for (const hospital of hospitals) {
       results.push({
         id: `hospital-${hospital._id}`,
         type: "hospital",
         name: hospital.name,
-        location: hospital.name,
+        phone: hospital.phone || "",
+        latitude: hospital.latitude || null,
+        longitude: hospital.longitude || null,
+        location: hospital.address || hospital.name,
         availabilityLabel: "available_now",
       });
     }

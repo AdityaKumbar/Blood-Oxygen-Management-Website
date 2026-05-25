@@ -66,6 +66,7 @@ export const listEmergencyRequests = async ({ page = 1, limit = 10, search = "",
 
   const [items, total] = await Promise.all([
     EmergencyRequest.find(query)
+      .populate("createdBy", "name phone latitude longitude address")
       .sort({ createdAt: -1 })
       .skip((numericPage - 1) * numericLimit)
       .limit(numericLimit),

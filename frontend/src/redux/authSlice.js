@@ -47,6 +47,10 @@ const authSlice = createSlice({
       state.error = null;
       clearScopedAuthSession();
     },
+    updateUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+      writeScopedAuthSession({ accessToken: state.token, user: state.user });
+    },
     clearAuthError: (state) => {
       state.error = null;
     },
@@ -95,5 +99,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearAuthError } = authSlice.actions;
+export const { logout, clearAuthError, updateUser } = authSlice.actions;
 export default authSlice.reducer;

@@ -10,6 +10,7 @@ const Sidebar = ({ mobile = false, onNavigate }) => {
 
   const hospitalItems = [
     { id: "hospital-dashboard", label: "Hospital Dashboard", path: "/hospital/dashboard" },
+    { id: "hospital-profile", label: "Hospital Profile", path: "/hospital/profile" },
   ];
 
   const navItems = isHospital ? hospitalItems : sidebarItems;
