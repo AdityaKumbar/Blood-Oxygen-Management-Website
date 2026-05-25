@@ -6,6 +6,7 @@ import {
   getUsers,
   login,
   profile,
+  updateProfile,
   register,
   rejectPendingUser,
 } from "../controllers/authController.js";
@@ -25,6 +26,7 @@ authRouter.get(
   profile
 );
 
+authRouter.put("/profile", authenticate, authorizeRoles(ROLES.SUPER_ADMIN, ROLES.HOSPITAL, ROLES.DONOR, ROLES.BLOOD_BANK, ROLES.OXYGEN_SUPPLIER), updateProfile);
 authRouter.get("/pending-users", authenticate, authorizeRoles(ROLES.SUPER_ADMIN), getPendingUsers);
 authRouter.patch("/pending-users/:id/approve", authenticate, authorizeRoles(ROLES.SUPER_ADMIN), approvePendingUser);
 authRouter.patch("/pending-users/:id/reject", authenticate, authorizeRoles(ROLES.SUPER_ADMIN), rejectPendingUser);

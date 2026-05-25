@@ -23,6 +23,8 @@ const toDonorResponse = (profile) => ({
   isRegistered: true,
   isAvailable: profile.isAvailable,
   eligibility: toEligibility(profile.lastDonatedAt),
+  bloodGroup: profile.bloodGroup,
+  city: profile.city,
   history: [],
 });
 

@@ -9,6 +9,7 @@ import {
   loginUser,
   registerUser,
   rejectUserAccount,
+  updateUserProfile,
 } from "../services/authService.js";
 
 export const register = asyncHandler(async (req, res) => {
@@ -49,4 +50,16 @@ export const getUsers = asyncHandler(async (req, res) => {
 export const getUserHistoryDetails = asyncHandler(async (req, res) => {
   const details = await getUserHistory(req.params.id);
   return successResponse(res, 200, "User history fetched successfully", details);
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const { name, phone, latitude, longitude, address } = req.body;
+  const user = await updateUserProfile(req.user.id, {
+    name,
+    phone,
+    latitude,
+    longitude,
+    address,
+  });
+  return successResponse(res, 200, "Profile updated successfully", user);
 });

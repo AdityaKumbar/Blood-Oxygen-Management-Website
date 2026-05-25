@@ -33,4 +33,8 @@ export const authService = {
     const { data } = await api.get(`/auth/users/${id}/history`);
     return data.data;
   },
+  updateProfile: async (payload) => {
+    const { data } = await api.put("/auth/profile", payload);
+    return data.data;
+  },
 };

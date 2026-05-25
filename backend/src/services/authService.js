@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User, { ACCOUNT_STATUS } from "../models/User.js";
 import EmergencyRequest from "../models/EmergencyRequest.js";
+import DonorProfile from "../models/DonorProfile.js";
 import AppError from "../utils/AppError.js";
 import { ROLES } from "../utils/roles.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
@@ -9,6 +10,10 @@ const toPublicUser = (user) => ({
   id: user._id,
   name: user.name,
   email: user.email,
+  phone: user.phone || "",
+  latitude: user.latitude || null,
+  longitude: user.longitude || null,
+  address: user.address || "",
   role: user.role,
   accountStatus: user.accountStatus,
   approvedAt: user.approvedAt,
@@ -17,7 +22,7 @@ const toPublicUser = (user) => ({
   updatedAt: user.updatedAt,
 });
 
-export const registerUser = async ({ name, email, password, role }) => {
+export const registerUser = async ({ name, email, password, role, bloodGroup, city }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new AppError("User already exists", 409);
@@ -36,9 +41,22 @@ export const registerUser = async ({ name, email, password, role }) => {
     approvedAt: shouldAutoApprove ? new Date() : null,
   });
 
+  const publicUser = toPublicUser(user);
+
+  if (role === ROLES.DONOR && bloodGroup) {
+    const donorProfile = await DonorProfile.create({
+      userId: user._id,
+      bloodGroup,
+      city: city || "Default City",
+      isAvailable: true,
+    });
+    publicUser.bloodGroup = donorProfile.bloodGroup;
+    publicUser.city = donorProfile.city;
+  }
+
   if (user.accountStatus !== ACCOUNT_STATUS.APPROVED) {
     return {
-      user: toPublicUser(user),
+      user: publicUser,
       accessToken: null,
       refreshToken: null,
     };
@@ -47,7 +65,7 @@ export const registerUser = async ({ name, email, password, role }) => {
   const tokenPayload = { sub: user._id.toString(), role: user.role };
 
   return {
-    user: toPublicUser(user),
+    user: publicUser,
     accessToken: generateAccessToken(tokenPayload),
     refreshToken: generateRefreshToken(tokenPayload),
   };
@@ -74,10 +92,19 @@ export const loginUser = async ({ email, password }) => {
     throw new AppError(`Account request was rejected${reasonSuffix}`, 403);
   }
 
+  const publicUser = toPublicUser(user);
+  if (user.role === ROLES.DONOR) {
+    const donorProfile = await DonorProfile.findOne({ userId: user._id });
+    if (donorProfile) {
+      publicUser.bloodGroup = donorProfile.bloodGroup;
+      publicUser.city = donorProfile.city;
+    }
+  }
+
   const tokenPayload = { sub: user._id.toString(), role: user.role };
 
   return {
-    user: toPublicUser(user),
+    user: publicUser,
     accessToken: generateAccessToken(tokenPayload),
     refreshToken: generateRefreshToken(tokenPayload),
   };
@@ -90,7 +117,16 @@ export const getUserProfile = async (userId) => {
     throw new AppError("User not found", 404);
   }
 
-  return toPublicUser(user);
+  const publicUser = toPublicUser(user);
+  if (user.role === ROLES.DONOR) {
+    const donorProfile = await DonorProfile.findOne({ userId: user._id });
+    if (donorProfile) {
+      publicUser.bloodGroup = donorProfile.bloodGroup;
+      publicUser.city = donorProfile.city;
+    }
+  }
+
+  return publicUser;
 };
 
 export const listPendingUsers = async () => {
@@ -177,4 +213,20 @@ export const getUserHistory = async (targetUserId) => {
     user: toPublicUser(user),
     emergencyRequests: emergencyRequests.map((item) => (item.toObject ? item.toObject() : item)),
   };
+};
+
+export const updateUserProfile = async (userId, { name, phone, latitude, longitude, address }) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (name !== undefined) user.name = name;
+  if (phone !== undefined) user.phone = phone;
+  if (latitude !== undefined) user.latitude = latitude;
+  if (longitude !== undefined) user.longitude = longitude;
+  if (address !== undefined) user.address = address;
+
+  await user.save();
+  return toPublicUser(user);
 };

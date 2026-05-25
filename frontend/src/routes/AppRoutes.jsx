@@ -6,6 +6,7 @@ import DashboardPage from "../pages/DashboardPage";
 import UsersPage from "../pages/UsersPage";
 import HospitalsPage from "../pages/HospitalsPage";
 import HospitalDashboardPage from "../pages/HospitalDashboardPage";
+import HospitalProfilePage from "../pages/HospitalProfilePage";
 import InventoryPage from "../pages/InventoryPage";
 import OxygenInventoryPage from "../pages/OxygenInventoryPage";
 import EmergencyRequestsPage from "../pages/EmergencyRequestsPage";
@@ -27,6 +28,17 @@ const AppRoutes = () => {
           <ProtectedRoute allowedRoles={[ROLES.HOSPITAL]} loginPath="/hospital/login">
             <DashboardLayout>
               <HospitalDashboardPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/hospital/profile"
+        element={
+          <ProtectedRoute allowedRoles={[ROLES.HOSPITAL]} loginPath="/hospital/login">
+            <DashboardLayout>
+              <HospitalProfilePage />
             </DashboardLayout>
           </ProtectedRoute>
         }
