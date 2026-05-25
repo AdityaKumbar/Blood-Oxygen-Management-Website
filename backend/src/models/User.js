@@ -9,6 +9,8 @@ export const ACCOUNT_STATUS = {
 
 const ACCOUNT_STATUS_VALUES = Object.values(ACCOUNT_STATUS);
 
+const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -35,6 +37,11 @@ const userSchema = new mongoose.Schema(
       enum: ROLE_VALUES,
       default: ROLES.HOSPITAL,
       index: true,
+    },
+    bloodGroup: {
+      type: String,
+      enum: BLOOD_GROUPS,
+      default: "",
     },
     accountStatus: {
       type: String,

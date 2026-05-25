@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User, { ACCOUNT_STATUS } from "../models/User.js";
+import DonorProfile from "../models/DonorProfile.js";
 import EmergencyRequest from "../models/EmergencyRequest.js";
 import AppError from "../utils/AppError.js";
 import { ROLES } from "../utils/roles.js";
@@ -12,6 +13,7 @@ const toPublicUser = (user) => ({
   phone: user.phone || "",
   avatarUrl: user.avatarUrl || "",
   role: user.role,
+  bloodGroup: user.bloodGroup || "",
   accountStatus: user.accountStatus,
   approvedAt: user.approvedAt,
   rejectionReason: user.rejectionReason,
@@ -19,7 +21,7 @@ const toPublicUser = (user) => ({
   updatedAt: user.updatedAt,
 });
 
-export const registerUser = async ({ name, email, phone, password, role }) => {
+export const registerUser = async ({ name, email, phone, password, role, bloodGroup, city }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new AppError("User already exists", 409);
@@ -35,9 +37,23 @@ export const registerUser = async ({ name, email, phone, password, role }) => {
     phone: phone ? String(phone).trim() : "",
     password: hashedPassword,
     role,
+    ...(role === ROLES.DONOR && bloodGroup ? { bloodGroup } : {}),
     accountStatus: shouldAutoApprove ? ACCOUNT_STATUS.APPROVED : ACCOUNT_STATUS.PENDING,
     approvedAt: shouldAutoApprove ? new Date() : null,
   });
+
+  if (role === ROLES.DONOR && bloodGroup) {
+    await DonorProfile.findOneAndUpdate(
+      { userId: user._id },
+      {
+        userId: user._id,
+        bloodGroup,
+        city: city ? String(city).trim() : "Not set",
+        isAvailable: true,
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+  }
 
   if (user.accountStatus !== ACCOUNT_STATUS.APPROVED) {
     return {

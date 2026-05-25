@@ -1,8 +1,15 @@
 import AppError from "../utils/AppError.js";
-import { ROLE_VALUES } from "../utils/roles.js";
+import { ROLE_VALUES, ROLES } from "../utils/roles.js";
+
+const VALID_BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export const validateRegisterPayload = (req, res, next) => {
   const { name, email, phone, password, role } = req.body;
+  const bloodGroup = req.body.bloodGroup ?? req.body.bloodgroup;
+
+  if (bloodGroup !== undefined) {
+    req.body.bloodGroup = bloodGroup;
+  }
 
   if (!name || !email || !password || !role) {
     return next(new AppError("name, email, password and role are required", 400));
@@ -18,6 +25,12 @@ export const validateRegisterPayload = (req, res, next) => {
 
   if (!ROLE_VALUES.includes(role)) {
     return next(new AppError("Invalid role provided", 400));
+  }
+
+  if (role === ROLES.DONOR) {
+    if (!bloodGroup || !VALID_BLOOD_GROUPS.includes(bloodGroup)) {
+      return next(new AppError("Valid bloodGroup is required for donor registration", 400));
+    }
   }
 
   return next();

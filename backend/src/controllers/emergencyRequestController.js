@@ -51,7 +51,11 @@ export const forwardEmergencyRequest = asyncHandler(async (req, res) => {
 export const assignEmergencyDonor = asyncHandler(async (req, res) => {
   const isDonor = req.user.role === "DONOR";
   const donorName = isDonor ? req.user.name : req.body.assignedDonor;
-  const result = await assignRequestDonor(req.params.id, donorName, { requireForwarded: isDonor });
+  const donorUserId = isDonor ? req.user.id : null;
+  const result = await assignRequestDonor(req.params.id, donorName, {
+    requireForwarded: isDonor,
+    donorUserId,
+  });
   emitSocketEvent(req, SOCKET_EVENTS.DONOR_ASSIGNED, result);
   return successResponse(res, 200, "Donor assigned successfully", result);
 });

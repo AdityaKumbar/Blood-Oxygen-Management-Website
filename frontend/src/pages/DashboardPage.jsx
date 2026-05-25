@@ -253,7 +253,7 @@ const DashboardPage = () => {
         <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.28)] sm:p-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Pending Hospital and Donor Accounts</h3>
+              <h3 className="text-lg font-bold text-slate-900">Pending Hospital & Donor Accounts</h3>
               <p className="text-xs text-slate-500">Approve or reject account requests before they can log in.</p>
             </div>
             <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700">{pendingAccounts.length} pending</span>

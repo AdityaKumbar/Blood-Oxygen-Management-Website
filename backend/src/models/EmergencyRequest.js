@@ -56,6 +56,12 @@ const emergencyRequestSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    assignedDonorUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+      index: true,
+    },
     contactNumber: {
       type: String,
       trim: true,

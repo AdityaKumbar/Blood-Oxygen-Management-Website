@@ -1,5 +1,6 @@
 import EmergencyRequest from "../models/EmergencyRequest.js";
 import AppError from "../utils/AppError.js";
+import { recordDonationFromEmergency, resolveDonorUserId } from "./donationService.js";
 
 const sanitize = (doc) => (doc.toObject ? doc.toObject() : doc);
 
@@ -146,12 +147,15 @@ export const forwardRequestToApp = async (id, notes = "") => {
 };
 
 export const assignRequestDonor = async (id, assignedDonor, options = {}) => {
-  const { requireForwarded = false } = options;
+  const { requireForwarded = false, donorUserId = null } = options;
   const record = await getRequestOrThrow(id);
   if (requireForwarded && record.status !== "FORWARDED_TO_APP") {
     throw new AppError("Only forwarded requests can be accepted by donor", 400);
   }
   record.assignedDonor = assignedDonor;
+  if (donorUserId) {
+    record.assignedDonorUserId = donorUserId;
+  }
   record.status = "ASSIGNED";
   await record.save();
   return sanitize(record);
@@ -162,5 +166,11 @@ export const resolveRequest = async (id) => {
   record.status = "RESOLVED";
   record.resolvedAt = new Date();
   await record.save();
+
+  const donorUserId = await resolveDonorUserId(record);
+  if (donorUserId) {
+    await recordDonationFromEmergency(record, donorUserId);
+  }
+
   return sanitize(record);
 };
