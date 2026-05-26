@@ -15,6 +15,7 @@ const initialForm = {
   hospital: "",
   priority: "MEDIUM",
   notes: "",
+  isInventory: false,
 };
 
 const EmergencyRequestsPage = () => {
@@ -63,7 +64,7 @@ const EmergencyRequestsPage = () => {
 
   const createRequest = async (event) => {
     event.preventDefault();
-    if (!form.patientName.trim() || !form.hospital.trim()) {
+    if (!form.isInventory && (!form.patientName.trim() || !form.hospital.trim())) {
       setFormError("Patient name and hospital are required");
       return;
     }
@@ -76,13 +77,14 @@ const EmergencyRequestsPage = () => {
       setSaving(true);
       setFormError("");
       await emergencyService.create({
-        patientName: form.patientName.trim(),
+        patientName: form.isInventory ? "" : form.patientName.trim(),
         requestType: form.requestType,
         bloodGroup: form.requestType === "BLOOD" ? form.bloodGroup : undefined,
         oxygenUnits: form.requestType === "OXYGEN" ? Number(form.oxygenUnits) : undefined,
-        hospital: form.hospital.trim(),
-        priority: form.priority,
+        hospital: form.isInventory ? "" : form.hospital.trim(),
+        priority: form.isInventory ? "MEDIUM" : form.priority,
         notes: form.notes.trim(),
+        isInventory: form.isInventory,
       });
       toast.success("Emergency request created");
       setForm(initialForm);
@@ -118,24 +120,58 @@ const EmergencyRequestsPage = () => {
         <p className="mt-1 text-sm text-slate-600">Create, triage, assign, and resolve emergency blood and oxygen requests in one flow.</p>
 
         <form className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5" onSubmit={createRequest}>
-          <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Patient name" value={form.patientName} onChange={(e) => setForm((prev) => ({ ...prev, patientName: e.target.value }))} />
-          <select className="rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.requestType} onChange={(e) => setForm((prev) => ({ ...prev, requestType: e.target.value }))}>
+          <div className="flex items-center space-x-2 sm:col-span-2 lg:col-span-5 mb-1 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100">
+            <input
+              type="checkbox"
+              id="isInventory"
+              checked={form.isInventory}
+              onChange={(e) => setForm((prev) => ({ ...prev, isInventory: e.target.checked }))}
+              className="h-4 w-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
+            />
+            <label htmlFor="isInventory" className="text-sm font-semibold text-slate-800 cursor-pointer select-none">
+              Request for Inventory <span className="font-normal text-slate-500">(No patient, hospital, or priority required - goes directly to app feed)</span>
+            </label>
+          </div>
+
+          <input 
+            className={`rounded-lg border px-3 py-2 text-sm transition-all duration-200 ${form.isInventory ? "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed" : "border-slate-300 focus:border-rose-500"}`} 
+            placeholder={form.isInventory ? "N/A (Inventory Request)" : "Patient name"} 
+            value={form.isInventory ? "" : form.patientName} 
+            onChange={(e) => setForm((prev) => ({ ...prev, patientName: e.target.value }))}
+            disabled={form.isInventory} 
+          />
+          <select className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-rose-500 transition-all duration-200" value={form.requestType} onChange={(e) => setForm((prev) => ({ ...prev, requestType: e.target.value }))}>
             <option value="BLOOD">Blood</option>
             <option value="OXYGEN">Oxygen</option>
           </select>
           {form.requestType === "BLOOD" ? (
-            <select className="rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.bloodGroup} onChange={(e) => setForm((prev) => ({ ...prev, bloodGroup: e.target.value }))}>
+            <select className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-rose-500 transition-all duration-200" value={form.bloodGroup} onChange={(e) => setForm((prev) => ({ ...prev, bloodGroup: e.target.value }))}>
               {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map((group) => <option key={group} value={group}>{group}</option>)}
             </select>
           ) : (
-            <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm" type="number" min="1" placeholder="Oxygen units needed" value={form.oxygenUnits} onChange={(e) => setForm((prev) => ({ ...prev, oxygenUnits: e.target.value }))} />
+            <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-rose-500 transition-all duration-200" type="number" min="1" placeholder="Oxygen units needed" value={form.oxygenUnits} onChange={(e) => setForm((prev) => ({ ...prev, oxygenUnits: e.target.value }))} />
           )}
-          <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Hospital" value={form.hospital} onChange={(e) => setForm((prev) => ({ ...prev, hospital: e.target.value }))} />
-          <select className="rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.priority} onChange={(e) => setForm((prev) => ({ ...prev, priority: e.target.value }))}>
-            {['LOW','MEDIUM','HIGH','CRITICAL'].map((value) => <option key={value} value={value}>{value}</option>)}
+          <input 
+            className={`rounded-lg border px-3 py-2 text-sm transition-all duration-200 ${form.isInventory ? "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed" : "border-slate-300 focus:border-rose-500"}`} 
+            placeholder={form.isInventory ? "N/A (Defaults to your bank)" : "Hospital"} 
+            value={form.isInventory ? "" : form.hospital} 
+            onChange={(e) => setForm((prev) => ({ ...prev, hospital: e.target.value }))}
+            disabled={form.isInventory} 
+          />
+          <select 
+            className={`rounded-lg border px-3 py-2 text-sm transition-all duration-200 ${form.isInventory ? "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed" : "border-slate-300 focus:border-rose-500"}`} 
+            value={form.isInventory ? "MEDIUM" : form.priority} 
+            onChange={(e) => setForm((prev) => ({ ...prev, priority: e.target.value }))}
+            disabled={form.isInventory}
+          >
+            {form.isInventory ? (
+              <option value="MEDIUM">MEDIUM (Default)</option>
+            ) : (
+              ['LOW','MEDIUM','HIGH','CRITICAL'].map((value) => <option key={value} value={value}>{value}</option>)
+            )}
           </select>
-          <button type="submit" disabled={saving} className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-70">Create Request</button>
-          <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm sm:col-span-2 lg:col-span-5" placeholder="Notes (optional)" value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} />
+          <button type="submit" disabled={saving} className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-70 transition-all duration-200 shadow-sm shadow-rose-100">Create Request</button>
+          <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm sm:col-span-2 lg:col-span-5 focus:border-rose-500 transition-all duration-200" placeholder="Notes (optional)" value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} />
         </form>
         {formError && <p className="mt-2 text-sm text-rose-600">{formError}</p>}
       </section>

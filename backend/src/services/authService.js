@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import User, { ACCOUNT_STATUS } from "../models/User.js";
 import DonorProfile from "../models/DonorProfile.js";
 import EmergencyRequest from "../models/EmergencyRequest.js";
-import DonorProfile from "../models/DonorProfile.js";
+// import DonorProfile from "../models/DonorProfile.js";
 import AppError from "../utils/AppError.js";
 import { ROLES } from "../utils/roles.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
@@ -75,28 +75,28 @@ export const registerUser = async ({ name, email, password, role, bloodGroup, ci
   };
 };
 
-export const updateUserProfile = async (userId, { name, phone, avatarUrl }) => {
-  const user = await User.findById(userId);
+// export const updateUserProfile = async (userId, { name, phone, avatarUrl }) => {
+//   const user = await User.findById(userId);
 
-  if (!user) {
-    throw new AppError("User not found", 404);
-  }
+//   if (!user) {
+//     throw new AppError("User not found", 404);
+//   }
 
-  if (name !== undefined) {
-    user.name = String(name).trim();
-  }
+//   if (name !== undefined) {
+//     user.name = String(name).trim();
+//   }
 
-  if (phone !== undefined) {
-    user.phone = String(phone).trim();
-  }
+//   if (phone !== undefined) {
+//     user.phone = String(phone).trim();
+//   }
 
-  if (avatarUrl !== undefined) {
-    user.avatarUrl = String(avatarUrl).trim();
-  }
+//   if (avatarUrl !== undefined) {
+//     user.avatarUrl = String(avatarUrl).trim();
+//   }
 
-  await user.save();
-  return toPublicUser(user);
-};
+//   await user.save();
+//   return toPublicUser(user);
+// };
 
 export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");

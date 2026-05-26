@@ -6,7 +6,7 @@ import { ROLES } from "../utils/roles.js";
 const seedAdmin = async () => {
   const adminEmail = process.env.ADMIN_EMAIL || "admin@healthcare.local";
   const adminPassword = process.env.ADMIN_PASSWORD || "Admin@12345";
-  const adminName = process.env.ADMIN_NAME || "System Admin";
+  const adminName = process.env.ADMIN_NAME || "LifeStream BLOOD BANK";
 
   await connectDatabase();
 
@@ -20,6 +20,9 @@ const seedAdmin = async () => {
     existingAdmin.accountStatus = ACCOUNT_STATUS.APPROVED;
     existingAdmin.approvedAt = new Date();
     existingAdmin.rejectionReason = "";
+    existingAdmin.address = "LifeStream BLOOD BANK RPD";
+    existingAdmin.latitude = 15.8352169;
+    existingAdmin.longitude = 74.5067137;
     await existingAdmin.save();
     console.log(`Admin user updated: ${adminEmail}`);
   } else {
@@ -30,6 +33,9 @@ const seedAdmin = async () => {
       role: ROLES.SUPER_ADMIN,
       accountStatus: ACCOUNT_STATUS.APPROVED,
       approvedAt: new Date(),
+      address: "LifeStream BLOOD BANK RPD",
+      latitude: 15.8352169,
+      longitude: 74.5067137,
     });
     console.log(`Admin user created: ${adminEmail}`);
   }

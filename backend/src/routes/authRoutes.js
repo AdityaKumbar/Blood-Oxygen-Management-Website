@@ -6,7 +6,7 @@ import {
   getUsers,
   login,
   profile,
-  updateProfile,
+  // updateProfile,
   register,
   rejectPendingUser,
   updateProfile,

@@ -9,7 +9,7 @@ export const ACCOUNT_STATUS = {
 
 const ACCOUNT_STATUS_VALUES = Object.values(ACCOUNT_STATUS);
 
-const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", ""];
 
 const userSchema = new mongoose.Schema(
   {

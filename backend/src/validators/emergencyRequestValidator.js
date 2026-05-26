@@ -4,10 +4,12 @@ import { PRIORITY_LEVELS, REQUEST_STATUS, REQUEST_TYPES } from "../models/Emerge
 const VALID_BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export const validateCreateEmergencyPayload = (req, res, next) => {
-  const { patientName, requestType = "BLOOD", bloodGroup, oxygenUnits, unitsRequired, hospital, priority, contactNumber } = req.body;
+  const { patientName, requestType = "BLOOD", bloodGroup, oxygenUnits, unitsRequired, hospital, priority, contactNumber, isInventory } = req.body;
 
-  if (!patientName || !hospital || !priority) {
-    return next(new AppError("patientName, hospital and priority are required", 400));
+  if (!isInventory) {
+    if (!patientName || !hospital || !priority) {
+      return next(new AppError("patientName, hospital and priority are required", 400));
+    }
   }
 
   if (!REQUEST_TYPES.includes(requestType)) {
@@ -26,7 +28,7 @@ export const validateCreateEmergencyPayload = (req, res, next) => {
     return next(new AppError("unitsRequired must be greater than 0", 400));
   }
 
-  if (!PRIORITY_LEVELS.includes(priority)) {
+  if (priority !== undefined && !PRIORITY_LEVELS.includes(priority)) {
     return next(new AppError("Invalid priority", 400));
   }
 

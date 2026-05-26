@@ -8,8 +8,12 @@ const emergencyRequestSchema = new mongoose.Schema(
   {
     patientName: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
+    },
+    isInventory: {
+      type: Boolean,
+      default: false,
     },
     requestType: {
       type: String,
@@ -35,7 +39,7 @@ const emergencyRequestSchema = new mongoose.Schema(
     },
     hospital: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
       index: true,
     },

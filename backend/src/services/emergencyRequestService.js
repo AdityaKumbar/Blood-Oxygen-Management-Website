@@ -6,18 +6,29 @@ const sanitize = (doc) => (doc.toObject ? doc.toObject() : doc);
 
 export const createEmergencyRequest = async (payload, user) => {
   const requestType = payload.requestType || "BLOOD";
+  const isInventory = !!payload.isInventory;
+  const patientName = isInventory ? (payload.patientName || "Inventory Request") : payload.patientName;
+  const hospital = isInventory ? (payload.hospital || user?.name || "Blood Bank") : payload.hospital;
+  const priority = isInventory ? (payload.priority || "MEDIUM") : payload.priority;
+  const status = isInventory ? "FORWARDED_TO_APP" : "PENDING";
+  const forwardedAt = isInventory ? new Date() : null;
+
   const created = await EmergencyRequest.create({
     ...payload,
+    patientName,
+    hospital,
+    priority,
     requestType,
+    isInventory,
     bloodGroup: requestType === "BLOOD" ? payload.bloodGroup : null,
     oxygenUnits: requestType === "OXYGEN" ? Number(payload.oxygenUnits) : null,
     unitsRequired: Number(payload.unitsRequired) > 0 ? Number(payload.unitsRequired) : 1,
     contactNumber: payload.contactNumber || "",
     createdBy: user?.id || null,
-    status: "PENDING",
+    status,
     assignedDonor: "",
     resolvedAt: null,
-    forwardedAt: null,
+    forwardedAt,
   });
   return sanitize(created);
 };
