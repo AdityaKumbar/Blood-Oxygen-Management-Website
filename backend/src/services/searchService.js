@@ -1,6 +1,6 @@
 import BloodInventory from "../models/BloodInventory.js";
 import OxygenInventory from "../models/OxygenInventory.js";
-import User from "../models/User.js";
+import User, { ACCOUNT_STATUS } from "../models/User.js";
 import { ROLES } from "../utils/roles.js";
 
 const mapAvailability = (status) => {
@@ -54,7 +54,7 @@ export const searchResources = async ({ query = "", bloodGroup = "ALL", includeB
   }
 
   if (includeHospitals) {
-    const hospitalQuery = { role: ROLES.HOSPITAL };
+    const hospitalQuery = { role: ROLES.HOSPITAL, accountStatus: ACCOUNT_STATUS.APPROVED };
     if (normalizedQuery) {
       hospitalQuery.name = { $regex: normalizedQuery, $options: "i" };
     }

@@ -32,7 +32,7 @@ export const validateCreateEmergencyPayload = (req, res, next) => {
     return next(new AppError("Invalid priority", 400));
   }
 
-  if (contactNumber !== undefined && !/^\+?[0-9]{10,15}$/.test(String(contactNumber).trim())) {
+  if (contactNumber !== undefined && String(contactNumber).trim() !== "" && !/^\+?[0-9]{10,15}$/.test(String(contactNumber).trim())) {
     return next(new AppError("Invalid contact number", 400));
   }
 
@@ -78,7 +78,7 @@ export const validateUpdateEmergencyPayload = (req, res, next) => {
     return next(new AppError("assignedDonor must be a string", 400));
   }
 
-  if (contactNumber !== undefined && !/^\+?[0-9]{10,15}$/.test(String(contactNumber).trim())) {
+  if (contactNumber !== undefined && String(contactNumber).trim() !== "" && !/^\+?[0-9]{10,15}$/.test(String(contactNumber).trim())) {
     return next(new AppError("Invalid contact number", 400));
   }
 

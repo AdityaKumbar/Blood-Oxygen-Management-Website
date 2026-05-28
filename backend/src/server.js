@@ -8,12 +8,6 @@ import apiRouter from "./routes/index.js";
 import notFound from "./middleware/notFound.js";
 import errorHandler from "./middleware/errorHandler.js";
 import registerSocketHandlers from "./sockets/index.js";
-import dns from "dns";
-
-dns.setServers([
-  "1.1.1.1",
-  "8.8.8.8"
-]);
 
 const app = express();
 const server = http.createServer(app);

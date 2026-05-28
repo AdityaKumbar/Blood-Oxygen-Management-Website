@@ -33,15 +33,20 @@ export const createEmergencyRequest = async (payload, user) => {
   return sanitize(created);
 };
 
-export const listEmergencyRequests = async ({ page = 1, limit = 10, search = "", status = "", priority = "", forApp = "false" }, user) => {
+export const listEmergencyRequests = async ({ page = 1, limit = 10, search = "", status = "", priority = "", forApp = "false", mine = "false" }, user) => {
   const isForApp = String(forApp).toLowerCase() === "true";
-  const isDonor = user?.role === "DONOR";
+  const isMine = String(mine).toLowerCase() === "true";
   const query = {};
   const andConditions = [];
 
+  if (isMine && user?.id) {
+    query.createdBy = user.id;
+    query.isInventory = { $ne: true };
+  }
+
   if (status) {
     query.status = status;
-  } else if (isForApp && !isDonor) {
+  } else if (isForApp && !isMine) {
     query.status = { $in: ["FORWARDED_TO_APP", "ASSIGNED", "RESOLVED"] };
   }
   if (priority) query.priority = priority;
@@ -55,15 +60,6 @@ export const listEmergencyRequests = async ({ page = 1, limit = 10, search = "",
       { bloodGroup: { $regex: search, $options: "i" } },
       { requestType: { $regex: search, $options: "i" } },
       { contactNumber: { $regex: search, $options: "i" } },
-      ],
-    });
-  }
-
-  if (isForApp && isDonor) {
-    andConditions.push({
-      $or: [
-      { status: { $in: ["FORWARDED_TO_APP", "ASSIGNED", "RESOLVED"] } },
-      { createdBy: user.id },
       ],
     });
   }
