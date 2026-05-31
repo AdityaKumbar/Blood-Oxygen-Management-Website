@@ -77,6 +77,19 @@ const emergencyRequestSchema = new mongoose.Schema(
       default: null,
       index: true,
     },
+    address: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    latitude: {
+      type: Number,
+      default: null,
+    },
+    longitude: {
+      type: Number,
+      default: null,
+    },
     notes: {
       type: String,
       trim: true,

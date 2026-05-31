@@ -136,27 +136,27 @@ const DashboardPage = () => {
     }
   };
 
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
-
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_20px_50px_-26px_rgba(15,23,42,0.35)] sm:p-7">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-rose-600">Operations</p>
-            <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Admin Dashboard</h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">Manage live pending emergency requests and account approvals.</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Pending Requests</p>
-            <p className="mt-1 text-lg font-extrabold text-slate-900">{pendingRequests.length}</p>
-          </div>
-        </div>
-      </section>
+      {loading ? (
+        <DashboardSkeleton />
+      ) : (
+        <>
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_20px_50px_-26px_rgba(15,23,42,0.35)] sm:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-rose-600">Operations</p>
+                  <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Admin Dashboard</h2>
+                  <p className="mt-2 max-w-2xl text-sm text-slate-600">Manage live pending emergency requests and account approvals.</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Pending Requests</p>
+                  <p className="mt-1 text-lg font-extrabold text-slate-900">{pendingRequests.length}</p>
+                </div>
+              </div>
+          </section>
 
-      <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.28)] sm:p-6">
+          <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.28)] sm:p-6">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -247,10 +247,10 @@ const DashboardPage = () => {
             </table>
           </div>
         )}
-      </section>
+          </section>
 
-      {isAdmin && (
-        <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.28)] sm:p-6">
+          {isAdmin && (
+            <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.28)] sm:p-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
               <h3 className="text-lg font-bold text-slate-900">Pending Hospital & Donor Accounts</h3>
@@ -309,9 +309,10 @@ const DashboardPage = () => {
               </table>
             </div>
           )}
-        </section>
+            </section>
+          )}
+        </>
       )}
-
       {selectedRequest && (
         <EmergencyRequestModal
           request={selectedRequest}

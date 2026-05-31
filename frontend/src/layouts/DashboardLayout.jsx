@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../components/dashboard/Sidebar";
 import Navbar from "../components/dashboard/Navbar";
+import DashboardAssistantWidget from "../components/dashboard/DashboardAssistantWidget";
 import { closeSidebar } from "../redux/uiSlice";
 
 const DashboardLayout = ({ children }) => {
@@ -30,6 +31,8 @@ const DashboardLayout = ({ children }) => {
             <div className="rounded-[28px] border border-white/70 bg-white/35 p-3 sm:p-4">{children}</div>
           </main>
         </div>
+
+        <DashboardAssistantWidget />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import oxygenRouter from "./oxygenRoutes.js";
 import emergencyRequestRouter from "./emergencyRequestRoutes.js";
 import donorRouter from "./donorRoutes.js";
 import searchRouter from "./searchRoutes.js";
+import assistantRouter from "./assistantRoutes.js";
 import { successResponse } from "../utils/response.js";
 
 const apiRouter = Router();
@@ -21,5 +22,6 @@ apiRouter.use("/oxygen", oxygenRouter);
 apiRouter.use("/emergency-requests", emergencyRequestRouter);
 apiRouter.use("/donor", donorRouter);
 apiRouter.use("/search", searchRouter);
+apiRouter.use("/assistant", assistantRouter);
 
 export default apiRouter;

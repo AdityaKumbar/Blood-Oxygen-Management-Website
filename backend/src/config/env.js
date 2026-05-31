@@ -12,6 +12,9 @@ const env = {
   mongoUri: process.env.MONGO_URI || "",
   jwtSecret: process.env.JWT_SECRET || "",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
+  ollamaApiUrl: process.env.OLLAMA_API_URL || "https://ollama.com/api",
+  ollamaApiKey: process.env.OLLAMA_API_KEY || "",
+  ollamaModel: process.env.OLLAMA_MODEL || "gpt-oss:120b",
 };
 
 export default env;
